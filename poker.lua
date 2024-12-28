@@ -70,7 +70,11 @@ function M.reduce(state, action)
 		return {
 			deck = state.deck,
 			hand = {
-				cards = state.hand.cards + action.value,
+				cards = (function()
+					local t = state.hand.cards
+					table.insert(t, action.value)
+					return t
+				end)(),
 			},
 		}
 	end

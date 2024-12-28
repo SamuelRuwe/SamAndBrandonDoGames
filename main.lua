@@ -1,5 +1,20 @@
 local poker = require("poker")
 
+local function dump(o)
+	if type(o) == "table" then
+		local s = "{ "
+		for k, v in pairs(o) do
+			if type(k) ~= "number" then
+				k = '"' .. k .. '"'
+			end
+			s = s .. "[" .. k .. "] = " .. dump(v) .. ","
+		end
+		return s .. "} "
+	else
+		return tostring(o)
+	end
+end
+
 ---@type poker_game.state.Core
 local initial_state = {
 	deck = {
@@ -17,7 +32,7 @@ function love.load()
 
 	Card = nil
 
-	SpriteAnimation = newAnimation(love.graphics.newImage("game-cards/card-suites.png"), 64, 64, 12)
+	-- SpriteAnimation = newAnimation(love.graphics.newImage("game-cards/card-suites.png"), 64, 64, 12)
 	GameState = initial_state
 end
 
@@ -38,10 +53,10 @@ local function newAnimation(sheet, width, height, duration)
 end
 
 function love.update(dt)
-	SpriteAnimation.currentTime = SpriteAnimation.currentTime + dt
-	if SpriteAnimation.currentTime >= SpriteAnimation.duration then
-		SpriteAnimation.currentTime = SpriteAnimation.currentTime - SpriteAnimation.duration
-	end
+	-- SpriteAnimation.currentTime = SpriteAnimation.currentTime + dt
+	-- if SpriteAnimation.currentTime >= SpriteAnimation.duration then
+	-- 	SpriteAnimation.currentTime = SpriteAnimation.currentTime - SpriteAnimation.duration
+	-- end
 end
 
 function love.mousereleased(x, y, button)
@@ -49,6 +64,8 @@ function love.mousereleased(x, y, button)
 end
 
 function love.draw(t)
+	love.graphics.print(dump(GameState), 300, 400)
+	-- love.graphics.print("hello world", 300, 400)
 	-- local spriteCounter = math.floor(spriteAnimation.currentTime / spriteAnimation.duration * #spriteAnimation.quads) + 1
 	-- love.graphics.draw(spriteAnimation.spriteSheet, spriteAnimation.quads[spriteCounter], 0, 0, 0, 4)
 end
