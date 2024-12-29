@@ -19,6 +19,7 @@ end
 local initial_state = {
   deck = {
     card_back = "",
+	deck_cards = {},
   },
   hand = {
     cards = {},
@@ -29,6 +30,8 @@ function love.load()
   SpriteSheet = love.graphics.newImage("game-cards/card-suites.png")
   CardBack = love.graphics.newImage("game-cards/card-back.png")
   TwoOfClubs = love.graphics.newImage("game-cards/clubs-2.png")
+
+
 
   Card = nil
 
@@ -60,11 +63,20 @@ function love.update(dt)
 end
 
 function love.mousereleased(x, y, button)
-  GameState = poker.reduce(GameState, poker.draw_card({ suit = poker.SUIT.clubs, rank = poker.RANK.two }))
+	if button == 1 then
+  		GameState = poker.reduce(GameState, poker.draw_card({ suit = poker.SUIT.clubs, rank = poker.RANK.two }))
+	end
+	if button == 2 then
+		GameState = poker.reduce(GameState, poker.new_game())
+	end
+		
 end
 
 function love.draw(t)
   love.graphics.print(dump(GameState), 300, 400)
+  for i = 1, #GameState.hand.cards do
+	love.graphics.draw(TwoOfClubs, i*50, 50)
+  end
   -- love.graphics.print("hello world", 300, 400)
   -- local spriteCounter = math.floor(spriteAnimation.currentTime / spriteAnimation.duration * #spriteAnimation.quads) + 1
   -- love.graphics.draw(spriteAnimation.spriteSheet, spriteAnimation.quads[spriteCounter], 0, 0, 0, 4)
