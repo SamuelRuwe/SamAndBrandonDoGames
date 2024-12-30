@@ -18,17 +18,20 @@ function M.reduce(state, action)
       },
     }
   elseif action.type == "[DECK] DRAW_CARD" then
+    if state.game_state == nil then
+      return state
+    end
     return {
       deck = {
         deck_cards = (function()
-          local t = state.deck.deck_cards
+          local t = state.game_state.deck.deck_cards
           table.insert(t, action.value)
           return t
         end)(),
       },
       hand = {
         cards = (function()
-          local t = state.hand.cards
+          local t = state.game_state.hand.cards
           table.insert(t, action.value)
           return t
         end)(),

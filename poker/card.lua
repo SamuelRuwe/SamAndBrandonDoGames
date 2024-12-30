@@ -1,4 +1,5 @@
 local M = {}
+local prop = require("utils.fp").prop
 
 ---@class poker.card.Card
 ---@field suit poker.card.SUIT: suit of the card
@@ -38,5 +39,11 @@ function M.poker_card(suit, rank)
     rank = rank,
   }
 end
+
+---@return function: poker.card.Card -> poker.card.SUIT
+M.suit = prop("suit")
+
+---@return function: poker.card.Card -> poker.card.RANK
+M.rank = prop("rank")
 
 return M
