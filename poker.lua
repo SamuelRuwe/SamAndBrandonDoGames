@@ -35,12 +35,19 @@ function M.draw_card(value)
 	return { type = "DRAW_CARD", value = value }
 end
 
+---@param value any
+---@return poker_game.state.ACTION
+function M.new_game(value)
+	return { type = "NEW_GAME", value = value }
+end
+
 ---@class poker_game.Card
 ---@field suit poker_game.SUIT
 ---@field rank poker_game.RANK
 
 ---@class poker_game.state.Deck
 ---@field card_back string: the card back on top of the deck
+---@field deck_cards poker_game.Card[]: cards remaining in deck available to draw
 
 ---@class poker_game.state.Hand
 ---@field cards poker_game.Card[]: cards in the players hand
@@ -66,9 +73,27 @@ function M.reduce(state, action)
 	if action == nil then
 		return state
 	end
+	if action.type == "NEW_GAME" then
+		return {
+			deck = {
+				card_back = "",
+				deck_cards = {},
+			  },
+			  hand = {
+				cards = {},
+			  },
+		}
+	end
 	if action.type == "DRAW_CARD" then
 		return {
-			deck = state.deck,
+			-- deck = state.deck,
+			deck = {
+				deck_cards = (function()
+					local t = state.deck.deck_cards
+					table.insert(t, action.value)
+					return t
+				end)(),
+			},
 			hand = {
 				cards = (function()
 					local t = state.hand.cards
