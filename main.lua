@@ -3,13 +3,20 @@ local game_state = require("state.core")
 local dump = require("utils.debug").dump
 
 local function load_img(file_name)
+  print(file_name)
   return love.graphics.newImage("assets/" .. file_name)
 end
 
+local function load_cards(directory)
+	local card_assets_dir = love.filesystem.getDirectoryItems(directory)
+	CardImages = {}
+	for k, card_asset in ipairs(card_assets_dir) do
+		CardImages[card_asset]  = load_img(card_asset)
+	end
+end
+
 function love.load()
-  SpriteSheet = load_img("card-suites.png")
-  CardBack = load_img("card-back.png")
-  TwoOfClubs = load_img("clubs-2.png")
+  load_cards("assets")
   GameState = game_state.initial_state
 end
 
@@ -27,7 +34,8 @@ end
 
 function love.draw(t)
   love.graphics.print(dump(GameState), 300, 400)
+
   for i, v in ipairs(GameState.hand.cards) do
-    love.graphics.draw(TwoOfClubs, i * 50, 50)
+    love.graphics.draw(CardImages["clubs-2.png"], i * 50, 50)
   end
 end
