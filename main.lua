@@ -1,83 +1,33 @@
-local poker = require("poker")
+local poker = require("poker.card")
+local game_state = require("state.core")
+local dump = require("utils.debug").dump
 
-local function dump(o)
-  if type(o) == "table" then
-    local s = "{ "
-    for k, v in pairs(o) do
-      if type(k) ~= "number" then
-        k = '"' .. k .. '"'
-      end
-      s = s .. "[" .. k .. "] = " .. dump(v) .. ","
-    end
-    return s .. "} "
-  else
-    return tostring(o)
-  end
+local function load_img(file_name)
+  return love.graphics.newImage("assets/" .. file_name)
 end
-
----@type poker_game.state.Core
-local initial_state = {
-  deck = {
-    card_back = "",
-	deck_cards = {},
-  },
-  hand = {
-    cards = {},
-  },
-}
 
 function love.load()
-  SpriteSheet = love.graphics.newImage("game-cards/card-suites.png")
-  CardBack = love.graphics.newImage("game-cards/card-back.png")
-  TwoOfClubs = love.graphics.newImage("game-cards/clubs-2.png")
-
-
-
-  Card = nil
-
-  -- SpriteAnimation = newAnimation(love.graphics.newImage("game-cards/card-suites.png"), 64, 64, 12)
-  GameState = initial_state
+  SpriteSheet = load_img("card-suites.png")
+  CardBack = load_img("card-back.png")
+  TwoOfClubs = load_img("clubs-2.png")
+  GameState = game_state.initial_state
 end
 
-local function newAnimation(sheet, width, height, duration)
-  local images = {}
-  images.spriteSheet = sheet
-  images.quads = {}
-  for i = 0, sheet:getHeight() - height, height do
-    for j = 0, sheet:getWidth() - width, width do
-      table.insert(images.quads, love.graphics.newQuad(j, i, width, height, sheet:getDimensions()))
-    end
-  end
-
-  images.duration = duration
-  images.currentTime = 0
-
-  return images
-end
-
-function love.update(dt)
-  -- SpriteAnimation.currentTime = SpriteAnimation.currentTime + dt
-  -- if SpriteAnimation.currentTime >= SpriteAnimation.duration then
-  -- 	SpriteAnimation.currentTime = SpriteAnimation.currentTime - SpriteAnimation.duration
-  -- end
-end
+---@param dt number: delta time
+function love.update(dt) end
 
 function love.mousereleased(x, y, button)
-	if button == 1 then
-  		GameState = poker.reduce(GameState, poker.draw_card({ suit = poker.SUIT.clubs, rank = poker.RANK.two }))
-	end
-	if button == 2 then
-		GameState = poker.reduce(GameState, poker.new_game())
-	end
-		
+  if button == 1 then
+    GameState = game_state.reduce(GameState, game_state.draw_card({ suit = poker.SUIT.clubs, rank = poker.RANK.ace }))
+  end
+  if button == 2 then
+    GameState = game_state.reduce(GameState, game_state.new_game())
+  end
 end
 
 function love.draw(t)
   love.graphics.print(dump(GameState), 300, 400)
-  for i = 1, #GameState.hand.cards do
-	love.graphics.draw(TwoOfClubs, i*50, 50)
+  for i, v in ipairs(GameState.hand.cards) do
+    love.graphics.draw(TwoOfClubs, i * 50, 50)
   end
-  -- love.graphics.print("hello world", 300, 400)
-  -- local spriteCounter = math.floor(spriteAnimation.currentTime / spriteAnimation.duration * #spriteAnimation.quads) + 1
-  -- love.graphics.draw(spriteAnimation.spriteSheet, spriteAnimation.quads[spriteCounter], 0, 0, 0, 4)
 end
