@@ -15,13 +15,23 @@ local function load_cards(directory)
   end
 end
 
+function set_windows()
+  backgroundImage = love.graphics.newImage("assets/card-suites.png")
+  windowWidth, windowHeight = love.graphics.getDimensions()
+  playerWidth = math.floor(windowWidth*.7)
+  playerHeight = math.floor(windowHeight*.25)
+end
+
 function love.load()
   GameState = game_state.initial_state
+  set_windows()
   load_cards("assets")
 end
 
 ---@param dt number: delta time
-function love.update(dt) end
+function love.update(dt)
+  set_windows()
+end
 
 function love.mousereleased(x, y, button)
   if button == 1 then
@@ -33,8 +43,14 @@ function love.mousereleased(x, y, button)
 end
 
 function love.draw(t)
-  love.graphics.print(dump(GameState), 300, 400)
+  -- center lines
+  love.graphics.rectangle("fill", windowWidth/2 - 2, 0, 4, windowHeight)
+  love.graphics.rectangle("fill", 0, windowHeight/2 - 2, windowWidth, 4)
+
+  -- player card area
+  love.graphics.rectangle("fill",math.floor(windowWidth*.15), math.floor(windowHeight*.75), playerWidth, playerHeight)
+
   for i, card in ipairs(GameState.game_state.hand.cards) do
-    love.graphics.draw(CardImages[card.suit .. "-" .. card.rank .. ".png"], i * 50, 50)
+    love.graphics.draw(CardImages[card.suit .. "-" .. card.rank .. ".png"], (windowWidth)/(1+#GameState.game_state.hand.cards)*i -(35/2), windowHeight*.85)
   end
 end
