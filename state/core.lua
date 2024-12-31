@@ -44,7 +44,7 @@ M.initial_state = {
   --- will remove this later when game isn't instantly started
   game_state = {
     deck = {
-      card_back = "",
+      card_back = "card-back",
       deck_cards = {},
     },
     hand = {

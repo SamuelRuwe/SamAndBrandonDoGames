@@ -14,7 +14,7 @@ local function handle_draw_card(state)
     is_paused = false,
     game_state = {
       deck = {
-        card_back = "",
+        card_back = "card-back",
         deck_cards = state.game_state.deck.deck_cards,
       },
       hand = {
@@ -29,7 +29,7 @@ local function handle_new_game(state)
     is_paused = false,
     game_state = {
       deck = {
-        card_back = "",
+        card_back = "card-back",
         deck_cards = standard_deck(),
       },
       hand = {
