@@ -1,4 +1,31 @@
 local M = {}
+local standard_deck = require("poker.deck").deckgen
+
+local function handle_draw_card(state)
+  if state.game_state == nil then
+    return state
+  end
+  if #state.game_state.deck.deck_cards == 0 then
+    return state
+  end
+  local drawn_card = table.remove(state.game_state.deck.deck_cards)
+  return {
+    is_paused = false,
+    game_state = {
+      deck = {
+        card_back = "",
+        deck_cards = state.game_state.deck.deck_cards,
+      },
+      hand = {
+        cards = (function()
+          local t = state.game_state.hand.cards
+          table.insert(t, drawn_card)
+          return t
+        end)(),
+      },
+    },
+  }
+end
 
 ---@param state poker.state.Core
 ---@param action poker.state.ACTION
@@ -14,7 +41,7 @@ function M.reduce(state, action)
       game_state = {
         deck = {
           card_back = "",
-          deck_cards = {},
+          deck_cards = standard_deck(),
         },
         hand = {
           cards = {},
@@ -22,28 +49,7 @@ function M.reduce(state, action)
       },
     }
   elseif action.type == "[DECK] DRAW_CARD" then
-    if state.game_state == nil then
-      return state
-    end
-    return {
-      is_paused = false,
-      game_state = {
-        deck = {
-          deck_cards = (function()
-            local t = state.game_state.deck.deck_cards
-            table.insert(t, action.value)
-            return t
-          end)(),
-        },
-        hand = {
-          cards = (function()
-            local t = state.game_state.hand.cards
-            table.insert(t, action.value)
-            return t
-          end)(),
-        },
-      },
-    }
+    return handle_draw_card(state)
   end
   return state
 end
