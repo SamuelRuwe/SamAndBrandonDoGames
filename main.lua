@@ -1,4 +1,3 @@
-local poker = require("poker.card")
 local game_state = require("state.core")
 local dump = require("utils.debug").dump
 local reducer = require("state.reducer")
@@ -26,7 +25,7 @@ function love.update(dt) end
 
 function love.mousereleased(x, y, button)
   if button == 1 then
-    GameState = reducer.reduce(GameState, actions.DRAW_CARD({ suit = poker.SUIT.clubs, rank = poker.RANK.ace }))
+    GameState = reducer.reduce(GameState, actions.DRAW_CARD())
   end
   if button == 2 then
     GameState = reducer.reduce(GameState, actions.NEW_GAME())

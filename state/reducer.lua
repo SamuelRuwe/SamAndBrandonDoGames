@@ -9,6 +9,7 @@ local function handle_draw_card(state)
     return state
   end
   local drawn_card = table.remove(state.game_state.deck.deck_cards)
+  table.insert(state.game_state.hand.cards, drawn_card)
   return {
     is_paused = false,
     game_state = {
@@ -17,11 +18,22 @@ local function handle_draw_card(state)
         deck_cards = state.game_state.deck.deck_cards,
       },
       hand = {
-        cards = (function()
-          local t = state.game_state.hand.cards
-          table.insert(t, drawn_card)
-          return t
-        end)(),
+        cards = state.game_state.hand.cards,
+      },
+    },
+  }
+end
+
+local function handle_new_game(state)
+  return {
+    is_paused = false,
+    game_state = {
+      deck = {
+        card_back = "",
+        deck_cards = standard_deck(),
+      },
+      hand = {
+        cards = {},
       },
     },
   }
@@ -35,19 +47,7 @@ function M.reduce(state, action)
     return state
   end
   if action.type == "[GAME] NEW_GAME" then
-    return {
-      is_paused = false,
-      --- will remove this later when game isn't instantly started
-      game_state = {
-        deck = {
-          card_back = "",
-          deck_cards = standard_deck(),
-        },
-        hand = {
-          cards = {},
-        },
-      },
-    }
+    return handle_new_game(state)
   elseif action.type == "[DECK] DRAW_CARD" then
     return handle_draw_card(state)
   end
