@@ -18,6 +18,16 @@ local M = {}
 ---@field game_state poker.state.Game | nil
 M.initial_state = {
   is_paused = false,
+  --- will remove this later when game isn't instantly started
+  game_state = {
+    deck = {
+      card_back = "",
+      deck_cards = {},
+    },
+    hand = {
+      cards = {},
+    },
+  },
 }
 
 return M

@@ -7,27 +7,27 @@ local prop = require("utils.fp").prop
 
 ---@enum poker.card.SUIT
 M.SUIT = {
-  hearts = 0,
-  spades = 1,
-  diamonds = 2,
-  clubs = 3,
+  hearts = "hearts",
+  spades = "spades",
+  diamonds = "diamonds",
+  clubs = "clubs",
 }
 
 ---@enum poker.card.RANK
 M.RANK = {
-  ace = 14,
-  king = 13,
-  queen = 12,
-  jack = 11,
-  ten = 10,
-  nine = 9,
-  eight = 8,
-  seven = 7,
-  six = 6,
-  five = 5,
-  four = 4,
-  three = 3,
-  two = 2,
+  ace = "ace",
+  king = "king",
+  queen = "queen",
+  jack = "jack",
+  ten = "10",
+  nine = "9",
+  eight = "8",
+  seven = "7",
+  six = "6",
+  five = "5",
+  four = "4",
+  three = "3",
+  two = "2",
 }
 
 ---@param suit poker.card.SUIT

@@ -34,6 +34,19 @@ function M.filter(p)
   end
 end
 
+---@param f function: (b, a) -> b
+---@param acc any: the initial accumulator state
+---@return function: [a] -> b
+function M.reduce(f, acc)
+  local ret = acc
+  return function(t)
+    for _, v in ipairs(t) do
+      ret = f(ret, v)
+    end
+    return ret
+  end
+end
+
 --- @vararg function: (y -> z), (x -> y), ..., (a -> b)
 --- @return function: [a] -> [z]
 function M.compose(...)

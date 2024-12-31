@@ -6,6 +6,7 @@ local map = fp.map
 local filter = fp.filter
 local compose = fp.compose
 local prop = fp.prop
+local reduce = fp.reduce
 
 describe("fp utils", function()
   it("map a list", function()
@@ -57,5 +58,14 @@ describe("fp utils", function()
     local card = { rank = 1 }
     local result = prop("rank")(card)
     eq(1, result)
+  end)
+
+  it("should reduce", function()
+    local list = { 1, 2, 3, 4 }
+    local function sum(acc, next)
+      return acc + next
+    end
+
+    eq(10, reduce(sum, 0)(list))
   end)
 end)
