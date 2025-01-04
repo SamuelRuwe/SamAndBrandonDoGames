@@ -39,6 +39,26 @@ local function handle_new_game(state)
   }
 end
 
+local function handle_grab_card(state, index)
+  if state.game_state == nil then
+    return state
+  end
+  cards = state.game_state.hand.cards
+  cards[index].isStationary = false
+  return {
+    is_paused = false,
+    game_state = {
+      deck = {
+        card_back = "card-back",
+        deck_cards = state.game_state.deck.deck_cards,
+      },
+      hand = {
+        cards = state.game_state.hand.cards,
+      },
+    },
+  }
+end
+
 ---@param state poker.state.Core
 ---@param action poker.state.ACTION
 ---@return poker.state.Core
@@ -49,6 +69,8 @@ function M.reduce(state, action)
   if action.type == "[GAME] NEW_GAME" then
     return handle_new_game(state)
   elseif action.type == "[DECK] DRAW_CARD" then
+    return handle_draw_card(state)
+  elseif action.type == "[HAND] GRAB_CARD" then
     return handle_draw_card(state)
   end
   return state
