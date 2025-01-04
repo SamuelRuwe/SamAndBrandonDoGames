@@ -1,8 +1,11 @@
 local game_state = require("state.core")
 local dump = require("utils.debug").dump
-local reducer = require("state.reducer")
+local og_reducer = require("state.reducer")
+local meta_reducer = require("state.metareducer")
+
+local reducer = meta_reducer.reduce(og_reducer.reduce)
 local actions = game_state.actions
-WIDTH_OFFSET = .15
+WIDTH_OFFSET = 0.15
 
 local function load_img(file_name)
   return love.graphics.newImage("assets/" .. file_name)
@@ -23,8 +26,8 @@ end
 function set_windows()
   backgroundImage = love.graphics.newImage("assets/card-suites.png")
   windowWidth, windowHeight = love.graphics.getDimensions()
-  playerWidth = math.floor(windowWidth*.7)
-  playerHeight = math.floor(windowHeight*.25)
+  playerWidth = math.floor(windowWidth * 0.7)
+  playerHeight = math.floor(windowHeight * 0.25)
 end
 
 function love.load()
@@ -42,43 +45,50 @@ function love.update(dt)
   --check if mouse is hovering over card
   if love.mouse.isDown(1) then
     local x, y = love.mouse.getPosition()
-    dragCard(x,y)
+    dragCard(x, y)
   end
 end
 
-function dragCard(x,y)
+function dragCard(x, y)
   draggablex = x
   draggabley = y
 end
 
 function love.mousereleased(x, y, button)
   if button == 1 then
-    GameState = reducer.reduce(GameState, actions.DRAW_CARD())
+    GameState = reducer(GameState, actions.DRAW_CARD())
   end
   if button == 2 then
-    GameState = reducer.reduce(GameState, actions.NEW_GAME())
+    GameState = reducer(GameState, actions.NEW_GAME())
   end
-  print(dump(game_state))
-
+  -- print(dump(game_state))
 end
 
 function draw_stationary_card(imageName, index)
-  love.graphics.draw(CardImages[imageName], (playerWidth)/(1+#GameState.game_state.hand.cards)*index -(35/2) + (windowWidth*WIDTH_OFFSET), windowHeight*.85)
+  love.graphics.draw(
+    CardImages[imageName],
+    windowWidth / (1 + #GameState.game_state.hand.cards) * index - (35 / 2),
+    windowHeight * 0.85
+  )
 end
 
 function love.draw(t)
   -- center lines
-  love.graphics.rectangle("fill", windowWidth/2 - 2, 0, 4, windowHeight)
-  love.graphics.rectangle("fill", 0, windowHeight/2 - 2, windowWidth, 4)
+  love.graphics.rectangle("fill", windowWidth / 2 - 2, 0, 4, windowHeight)
+  love.graphics.rectangle("fill", 0, windowHeight / 2 - 2, windowWidth, 4)
 
   -- player card area
-  love.graphics.rectangle("fill",math.floor(windowWidth*WIDTH_OFFSET), math.floor(windowHeight*.75), playerWidth, playerHeight)
-
-  -- love.graphics.draw(DraggableCard, draggablex, draggabley)
+  love.graphics.rectangle(
+    "fill",
+    math.floor(windowWidth * WIDTH_OFFSET),
+    math.floor(windowHeight * 0.75),
+    playerWidth,
+    playerHeight
+  )
 
   for i, card in ipairs(GameState.game_state.hand.cards) do
     local imageName = card.suit .. "-" .. card.rank .. ".png"
-    if CardImages[imageName].isStationary then
+    if card.isStationary then
       draw_stationary_card(imageName, i)
     end
   end
