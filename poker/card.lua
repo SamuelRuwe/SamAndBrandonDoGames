@@ -4,6 +4,7 @@ local prop = require("utils.fp").prop
 ---@class poker.card.Card
 ---@field suit poker.card.SUIT: suit of the card
 ---@field rank poker.card.RANK: rank of the card
+---@field isStationary boolean: whether the card is stationary
 
 ---@enum poker.card.SUIT
 M.SUIT = {
@@ -37,6 +38,7 @@ function M.poker_card(suit, rank)
   return {
     suit = suit,
     rank = rank,
+    isStationary = false,
   }
 end
 
@@ -45,5 +47,8 @@ M.suit = prop("suit")
 
 ---@return function: poker.card.Card -> poker.card.RANK
 M.rank = prop("rank")
+
+---@return boolean: whether the card is stationary or not
+M.isStationary = prop("isStationary")
 
 return M

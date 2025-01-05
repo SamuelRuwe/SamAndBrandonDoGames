@@ -4,7 +4,7 @@ local M = {}
 local font = love.graphics.newFont(50)
 local cursor = {}
 cursor.index = 1
-cursor.max = 3
+cursor.max = 4
 cursor.x = 85
 cursor.y = 155
 cursor.w = 305
@@ -28,7 +28,8 @@ function M.draw()
   love.graphics.setColor(1, 1, 1, 1)
   love.graphics.print("New Game", 100, 150)
   love.graphics.print("Sams Super Cool Card Click Game", 100, 200)
-  love.graphics.print("Quit", 100, 250)
+  love.graphics.print("Brandons Super Cool Draggable Cards", 100, 250)
+  love.graphics.print("Quit", 100, 300)
 end
 
 function M.keypressed(key)
@@ -54,6 +55,9 @@ function M.keypressed(key)
       state.current = state.samssupercoolcardstate
     end
     if cursor.index == 3 then
+      state.current = state.highcard
+    end
+    if cursor.index == 4 then
       love.event.quit()
     end
   end
