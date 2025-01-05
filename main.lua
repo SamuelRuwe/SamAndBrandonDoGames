@@ -5,15 +5,15 @@ local meta_reducer = require("state.metareducer")
 
 local reducer = meta_reducer.reduce(og_reducer.reduce)
 local actions = game_state.actions
-WIDTH_OFFSET = 0.15
+
 
 local function load_img(file_name)
   return love.graphics.newImage("assets/" .. file_name)
 end
 
-local function load_draggable()
-  return love.graphics.newImage("assets/card-back.png")
-end
+-- local function load_draggable()
+--   return love.graphics.newImage("assets/card-back.png")
+-- end
 
 local function load_cards(directory)
   local card_assets_dir = love.filesystem.getDirectoryItems(directory)
@@ -32,34 +32,81 @@ end
 
 function love.load()
   GameState = game_state.initial_state
+  HANDLING_CARD = false
+  HANDLE_INDEX = nil
+  WIDTH_OFFSET = 0.15
   set_windows()
+  PlayerCardLocations = {}
   load_cards("assets")
-  DraggableCard = load_draggable()
+  -- DraggableCard = load_draggable()
   draggablex = 0
   draggabley = 0
+end
+
+function get_card_locations()
+  if #GameState.game_state.hand.cards > 0 then
+    for i, card in ipairs(GameState.game_state.hand.cards) do
+      table.insert(PlayerCardLocations, i, card)
+      PlayerCardLocations[i].x = playerWidth / (1 + #GameState.game_state.hand.cards) * i - (35 / 2) + windowWidth*WIDTH_OFFSET
+      PlayerCardLocations[i].y = windowHeight * 0.85
+      print("index: " .. i .." x: " .. PlayerCardLocations[i].x .. " \r\n y: " .. PlayerCardLocations[i].y)
+    end
+  end
+end
+
+function get_hovering_details()
+
+  --Card.x <= mouseX <= Card.x + 35
+  --Card.y <= mouseY <= Card.y + 53
+  local mouseX, mouseY = love.mouse.getPosition()
+  for i, card in ipairs(GameState.game_state.hand.cards) do    
+    if mouseX - PlayerCardLocations[i].x  <= 35
+      and mouseX - PlayerCardLocations[i].x >= 0
+      and mouseY - PlayerCardLocations[i].y <= 53
+      and mouseY - PlayerCardLocations[i].y >= 0 then
+      return i, true
+    end
+  end
+  return 0, false
 end
 
 ---@param dt number: delta time
 function love.update(dt)
   set_windows()
   --check if mouse is hovering over card
+
   if love.mouse.isDown(1) then
-    local x, y = love.mouse.getPosition()
-    dragCard(x, y)
+    local cardIndex, isHovering = get_hovering_details()
+    if isHovering and not HANDLING_CARD then --grab first card selected
+      print("holding " .. cardIndex .. " IS HANDLING? ".. tostring(HANDLING_CARD))
+      HANDLING_CARD = true
+      HANDLE_INDEX = cardIndex
+      GameState = reducer(GameState, actions.GRAB_CARD())
+      draggablex, draggabley = love.mouse.getPosition()
+    elseif isHovering and HANDLING_CARD then --only grab one card at a time
+      print("passed over " .. cardIndex)
+      draggablex, draggabley = love.mouse.getPosition()
+    elseif not isHovering and HANDLING_CARD then --allows card to be dragged anywhere on screen
+      draggablex, draggabley = love.mouse.getPosition()
+    end
   end
+  
 end
 
-function dragCard(x, y)
-  draggablex = x
-  draggabley = y
-end
 
 function love.mousereleased(x, y, button)
-  if button == 1 then
+  if button == 3 then
     GameState = reducer(GameState, actions.DRAW_CARD())
+    get_card_locations()
   end
   if button == 2 then
     GameState = reducer(GameState, actions.NEW_GAME())
+  end
+  if button == 1 and HANDLING_CARD then
+    print("released " .. HANDLE_INDEX)
+    GameState = reducer(GameState, actions.RELEASE_CARD())
+    HANDLING_CARD = false
+    HANDLE_INDEX = nil
   end
   -- print(dump(game_state))
 end
@@ -67,8 +114,16 @@ end
 function draw_stationary_card(imageName, index)
   love.graphics.draw(
     CardImages[imageName],
-    windowWidth / (1 + #GameState.game_state.hand.cards) * index - (35 / 2),
+    playerWidth / (1 + #GameState.game_state.hand.cards) * index - (35 / 2) + windowWidth*WIDTH_OFFSET,
     windowHeight * 0.85
+  )
+end
+
+function draw_dragging_card(imageName)
+  love.graphics.draw(
+    CardImages[imageName],
+    draggablex,
+    draggabley
   )
 end
 
@@ -90,6 +145,8 @@ function love.draw(t)
     local imageName = card.suit .. "-" .. card.rank .. ".png"
     if card.isStationary then
       draw_stationary_card(imageName, i)
+    else
+      draw_dragging_card(imageName)
     end
   end
 end

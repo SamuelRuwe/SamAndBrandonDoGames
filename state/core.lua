@@ -5,6 +5,7 @@ M.action_types = {
   DRAW_CARD = "[DECK] DRAW_CARD",
   NEW_GAME = "[GAME] NEW_GAME",
   GRAB_CARD = "[HAND] GRAB_CARD",
+  RELEASE_CARD = "[HAND] RELEASE_CARD",
 }
 
 ---@param v any
@@ -25,10 +26,18 @@ local function grab_card(v)
   return { type = M.action_types.GRAB_CARD, value = v }
 end
 
+---@param v any
+---@return poker.state.ACTION
+local function release_card(v)
+  return { type = M.action_types.RELEASE_CARD, value = v }
+end
+
 M.actions = {
   DRAW_CARD = draw_card,
   NEW_GAME = new_game,
   GRAB_CARD = grab_card,
+  RELEASE_CARD = release_card,
+
 }
 
 local callbacks = {}
