@@ -15,6 +15,10 @@ state.menu = require("gamestates.menu")
 state.firsttry = require("gamestates.firsttry")
 state.samssupercoolcardstate = require("gamestates.samssupercoolcardstate")
 
+-- initialize overlays
+overlay = require("overlays.main")
+overlay.menuOptions = require("overlays.menuOptions")
+
 function love.load()
   load_cards("assets")
   state.current = state.menu
@@ -26,7 +30,7 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-  state.current.keypressed(key)
+  overlay.keypressed(key)
 end
 
 function love.mousereleased(x, y, button)
@@ -35,4 +39,5 @@ end
 
 function love.draw(t)
   state.current.draw()
+  overlay.draw()
 end

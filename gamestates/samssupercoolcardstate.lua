@@ -26,6 +26,9 @@ function M.keypressed(k)
   if k == "escape" then
     state.current = state.menu
   end
+  if k == "q" then
+    overlay.push(overlay.menuOptions)
+  end
 end
 
 return M
