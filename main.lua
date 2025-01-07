@@ -1,5 +1,14 @@
+local game_state = require("state.core")
+local dump = require("utils.debug").dump
+local reducer = require("state.reducer")
+local actions = game_state.actions
+
 local function load_img(file_name)
   return love.graphics.newImage("assets/" .. file_name)
+end
+
+local function load_draggable()
+  return love.graphics.newImage("assets/card-back.png")
 end
 
 local function load_cards(directory)

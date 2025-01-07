@@ -17,7 +17,7 @@ function M.deckgen(seed)
   local deck = {}
   for _, rank in pairs(cards.RANK) do
     for _, suit in pairs(cards.SUIT) do
-      table.insert(deck, cards.poker_card(suit, rank))
+      table.insert(deck, cards.poker_card(suit, rank, true))
     end
   end
   love.math.setRandomSeed(seed)
