@@ -23,6 +23,7 @@ state.samssupercoolcardstate = require("gamestates.samssupercoolcardstate")
 -- initialize overlays
 overlay = require("overlays.main")
 overlay.menuOptions = require("overlays.menuOptions")
+overlay.debug = require("overlays.debug")
 
 function love.load()
   load_cards("assets")

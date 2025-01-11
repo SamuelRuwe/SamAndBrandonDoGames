@@ -152,6 +152,9 @@ function M.draw(t)
 end
 
 function M.keypressed(k)
+  if k == "f2" then
+    overlay.push(overlay.debug)
+  end
   if k == "escape" then
     state.current = state.menu
   end
