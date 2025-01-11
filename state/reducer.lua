@@ -43,7 +43,7 @@ local function handle_grab_card(state, action)
   if state.game_state == nil then
     return state
   end
-  state.game_state.hand.cards[action.value.handleIndex].isStationary = false
+  state.game_state.hand.cards[action.value.cardIndex].isStationary = false
   return {
     is_paused = false,
     game_state = {
@@ -62,30 +62,30 @@ local function handle_release_card(state, action)
   if state.game_state == nil then
     return state
   end
-  local handleIndex = action.value.handleIndex
+  local cardIndex = action.value.cardIndex
   local trackIndex = action.value.trackIndex
-  state.game_state.hand.cards[handleIndex].isStationary = true
+  state.game_state.hand.cards[cardIndex].isStationary = true
   local tempTable = {}
 
-  if trackIndex < handleIndex then --card shifted to left, move cards inbetween right
+  if trackIndex <= cardIndex then --card shifted to left, move cards inbetween right
     for i, card in ipairs(state.game_state.hand.cards) do
-      if i == handleIndex then
+      if i == cardIndex then
         tempTable[trackIndex] = card
-      elseif i < trackIndex or i > handleIndex then
+      elseif i < trackIndex or i > cardIndex then
         tempTable[i] = card
-      elseif i >= trackIndex and i < handleIndex then
+      elseif i >= trackIndex and i < cardIndex then
         tempTable[i + 1] = card
       else
         tempTable[i] = card
       end
     end
-  elseif trackIndex > handleIndex then --card shifted right, move cards inbetween left
+  elseif trackIndex > cardIndex then --card shifted right, move cards inbetween left
     for i, card in ipairs(state.game_state.hand.cards) do
-      if i == handleIndex then
+      if i == cardIndex then
         tempTable[trackIndex] = card
-      elseif i > trackIndex or i < handleIndex then
+      elseif i > trackIndex or i < cardIndex then
         tempTable[i] = card
-      elseif i > handleIndex and i <= trackIndex then
+      elseif i > cardIndex and i <= trackIndex then
         tempTable[i - 1] = card
       else
         tempTable[i] = card
