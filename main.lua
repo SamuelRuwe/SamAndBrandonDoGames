@@ -17,7 +17,6 @@ end
 
 state = {}
 state.menu = require("gamestates.menu")
-state.firsttry = require("gamestates.firsttry")
 state.highcard = require("gamestates.highcard")
 state.samssupercoolcardstate = require("gamestates.samssupercoolcardstate")
 

@@ -22,6 +22,7 @@ local HANDLE_INDEX = nil
 local TRACK_INDEX = nil
 local WIDTH_OFFSET = 0.15
 
+
 local function get_card_locations()
   if PlayerCardLocations then
     PlayerCardLocations = {}
