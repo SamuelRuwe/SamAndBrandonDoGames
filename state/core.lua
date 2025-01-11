@@ -14,7 +14,7 @@ local function grab_card(v)
   return { type = M.action_types.GRAB_CARD, value = v }
 end
 
----@param v any
+---@param v { handleIndex, trackIndex }
 ---@return poker.state.ACTION
 local function release_card(v)
   return { type = M.action_types.RELEASE_CARD, value = v }

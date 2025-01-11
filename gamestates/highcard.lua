@@ -17,11 +17,10 @@ local offsetx = 0
 local offsety = 0
 local PlayerCardLocations = {}
 local GameState = game_state.initial_state
-local HANDLING_CARD = false
-local HANDLE_INDEX = nil
-local TRACK_INDEX = nil
-local WIDTH_OFFSET = 0.15
-
+HANDLING_CARD = false
+HANDLE_INDEX = nil
+TRACK_INDEX = nil
+WIDTH_OFFSET = 0.15
 
 local function get_card_locations()
   if PlayerCardLocations then
@@ -44,14 +43,8 @@ local function get_hovering_details()
   --Card.y <= mouseY <= Card.y + 53
   local mouseX, mouseY = love.mouse.getPosition()
   for i, card in ipairs(PlayerCardLocations) do
-    if
-      mouseX - card.x <= 35
-      and mouseX - card.x >= 0
-      and mouseY - card.y <= 53
-      and mouseY - card.y >= 0
-    then
-      return i, 
-      true
+    if mouseX - card.x <= 35 and mouseX - card.x >= 0 and mouseY - card.y <= 53 and mouseY - card.y >= 0 then
+      return i, true
     end
   end
   return 0, false
@@ -62,14 +55,20 @@ function M.update(dt)
   --check if mouse is hovering over card
   if love.mouse.isDown(1) then
     local cardIndex, isHovering = get_hovering_details()
+    local totalCards = #PlayerCardLocations
     if isHovering and not HANDLING_CARD then --grab first card selected
-      local totalCards = #PlayerCardLocations
       HANDLING_CARD = true
       HANDLE_INDEX = cardIndex
       TRACK_INDEX = cardIndex
-      GameState = reducer(GameState, actions.GRAB_CARD(), HANDLE_INDEX)
+      GameState = reducer(
+        GameState,
+        actions.GRAB_CARD({
+          handleIndex = HANDLE_INDEX,
+        })
+      )
       draggablex, draggabley = love.mouse.getPosition()
-      offsetx, offsety = PlayerCardLocations[HANDLE_INDEX].x - draggablex , PlayerCardLocations[HANDLE_INDEX].y - draggabley
+      offsetx, offsety =
+        PlayerCardLocations[HANDLE_INDEX].x - draggablex, PlayerCardLocations[HANDLE_INDEX].y - draggabley
       table.remove(PlayerCardLocations, HANDLE_INDEX)
     elseif isHovering and HANDLING_CARD then --only grab one card at a time, check if passed over new card
       draggablex, draggabley = love.mouse.getPosition()
@@ -92,7 +91,7 @@ function M.update(dt)
           end
           -- print("LT: " .. tostring(loc.x))
         end
-      -- print("Track Index: " .. tostring(TRACK_INDEX))
+        -- print("Track Index: " .. tostring(TRACK_INDEX))
       end
     end
   else
@@ -111,7 +110,13 @@ function M.mousereleased(x, y, button)
   end
   if button == 1 and HANDLING_CARD then
     print("released " .. TRACK_INDEX)
-    GameState = reducer(GameState, actions.RELEASE_CARD(), HANDLE_INDEX, TRACK_INDEX)
+    GameState = reducer(
+      GameState,
+      actions.RELEASE_CARD({
+        handleIndex = HANDLE_INDEX,
+        trackIndex = TRACK_INDEX,
+      })
+    )
     get_card_locations()
     HANDLING_CARD = false
     HANDLE_INDEX = nil

@@ -39,11 +39,11 @@ local function handle_new_game(state)
   }
 end
 
-local function handle_grab_card(state, handleIndex)
+local function handle_grab_card(state, action)
   if state.game_state == nil then
     return state
   end
-  state.game_state.hand.cards[handleIndex].isStationary = false
+  state.game_state.hand.cards[action.value.handleIndex].isStationary = false
   return {
     is_paused = false,
     game_state = {
@@ -58,34 +58,35 @@ local function handle_grab_card(state, handleIndex)
   }
 end
 
-local function handle_release_card(state, handleIndex, trackIndex)
+local function handle_release_card(state, action)
   if state.game_state == nil then
     return state
   end
+  local handleIndex = action.value.handleIndex
+  local trackIndex = action.value.trackIndex
   state.game_state.hand.cards[handleIndex].isStationary = true
   local tempTable = {}
 
-
   if trackIndex < handleIndex then --card shifted to left, move cards inbetween right
-    for i,card in ipairs(state.game_state.hand.cards) do
+    for i, card in ipairs(state.game_state.hand.cards) do
       if i == handleIndex then
-        tempTable[trackIndex] = card  
+        tempTable[trackIndex] = card
       elseif i < trackIndex or i > handleIndex then
-        tempTable[i] = card   
+        tempTable[i] = card
       elseif i >= trackIndex and i < handleIndex then
-        tempTable[i+1] = card
+        tempTable[i + 1] = card
       else
         tempTable[i] = card
       end
     end
   elseif trackIndex > handleIndex then --card shifted right, move cards inbetween left
-    for i,card in ipairs(state.game_state.hand.cards) do
+    for i, card in ipairs(state.game_state.hand.cards) do
       if i == handleIndex then
-        tempTable[trackIndex] = card   
+        tempTable[trackIndex] = card
       elseif i > trackIndex or i < handleIndex then
         tempTable[i] = card
       elseif i > handleIndex and i <= trackIndex then
-        tempTable[i-1] = card
+        tempTable[i - 1] = card
       else
         tempTable[i] = card
       end
@@ -110,7 +111,7 @@ end
 ---@param state poker.state.Core
 ---@param action poker.state.ACTION
 ---@return poker.state.Core
-function M.reduce(state, action, handleIndex, trackIndex)
+function M.reduce(state, action)
   if action == nil then
     return state
   end
@@ -119,9 +120,9 @@ function M.reduce(state, action, handleIndex, trackIndex)
   elseif action.type == "[DECK] DRAW_CARD" then
     return handle_draw_card(state)
   elseif action.type == "[HAND] GRAB_CARD" then
-    return handle_grab_card(state, handleIndex)
+    return handle_grab_card(state, action)
   elseif action.type == "[HAND] RELEASE_CARD" then
-    return handle_release_card(state, handleIndex, trackIndex)
+    return handle_release_card(state, action)
   end
   return state
 end
