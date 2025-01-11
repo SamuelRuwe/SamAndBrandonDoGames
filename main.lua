@@ -7,10 +7,6 @@ local function load_img(file_name)
   return love.graphics.newImage("assets/" .. file_name)
 end
 
-local function load_draggable()
-  return love.graphics.newImage("assets/card-back.png")
-end
-
 local function load_cards(directory)
   local card_assets_dir = love.filesystem.getDirectoryItems(directory)
   CardImages = {}
@@ -21,7 +17,6 @@ end
 
 state = {}
 state.menu = require("gamestates.menu")
-state.firsttry = require("gamestates.firsttry")
 state.highcard = require("gamestates.highcard")
 state.samssupercoolcardstate = require("gamestates.samssupercoolcardstate")
 

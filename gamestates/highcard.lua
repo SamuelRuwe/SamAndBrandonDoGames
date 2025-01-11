@@ -15,9 +15,9 @@ local draggablex = 0
 local draggabley = 0
 local PlayerCardLocations = {}
 local GameState = game_state.initial_state
-local HANDLING_CARD = false
-local HANDLE_INDEX = nil
-local WIDTH_OFFSET = 0.15
+HANDLING_CARD = false
+HANDLE_INDEX = nil
+WIDTH_OFFSET = 0.15
 
 local function get_card_locations()
   if #GameState.game_state.hand.cards > 0 then
