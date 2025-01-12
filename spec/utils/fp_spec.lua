@@ -7,6 +7,7 @@ local filter = fp.filter
 local compose = fp.compose
 local prop = fp.prop
 local reduce = fp.reduce
+local tail = fp.tail
 
 describe("fp utils", function()
   it("map a list", function()
@@ -67,5 +68,31 @@ describe("fp utils", function()
     end
 
     eq(10, reduce(sum, 0)(list))
+  end)
+
+  describe("tail", function()
+    it("should return the last n elements", function()
+      local list = { 1, 2, 3, 4 }
+      local result = tail(list, 2)
+      local expected = { 3, 4 }
+      eq(2, #result)
+      eq(expected, result)
+    end)
+
+    it("should return all elements when n is greater than length", function()
+      local list = { 1, 2, 3, 4 }
+      local result = tail(list, 40)
+      local expected = { 1, 2, 3, 4 }
+      eq(4, #result)
+      eq(expected, result)
+    end)
+
+    it("should return the last 10 elements", function()
+      local list = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+      local result = tail(list, 10)
+      local expected = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+      eq(10, #result)
+      eq(expected, result)
+    end)
   end)
 end)

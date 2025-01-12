@@ -101,7 +101,6 @@ function M.mousereleased(x, y, button)
     GameState = reducer(GameState, actions.NEW_GAME())
   end
   if button == 1 and HANDLING_CARD then
-    print("released " .. TRACK_INDEX)
     GameState = reducer(
       GameState,
       actions.RELEASE_CARD({
@@ -152,6 +151,9 @@ function M.draw(t)
 end
 
 function M.keypressed(k)
+  if k == "f2" then
+    overlay.push(overlay.debug)
+  end
   if k == "escape" then
     state.current = state.menu
   end

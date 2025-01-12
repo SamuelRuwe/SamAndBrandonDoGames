@@ -63,4 +63,16 @@ function M.compose(...)
   end
 end
 
+---@param list table: the input list
+---@param n number: the number of lines from the end of the logs you want returned
+---@return table: the list with the last n elements from the input list
+function M.tail(list, n)
+  local result = {}
+  local lower_bound = math.max(1, #list - n + 1)
+  for i = lower_bound, #list do
+    table.insert(result, list[i])
+  end
+  return result
+end
+
 return M

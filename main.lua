@@ -1,7 +1,7 @@
 local game_state = require("state.core")
-local dump = require("utils.debug").dump
 local reducer = require("state.reducer")
 local actions = game_state.actions
+Logger = require("utils.logger")
 
 local function load_img(file_name)
   return love.graphics.newImage("assets/" .. file_name)
@@ -23,6 +23,7 @@ state.samssupercoolcardstate = require("gamestates.samssupercoolcardstate")
 -- initialize overlays
 overlay = require("overlays.main")
 overlay.menuOptions = require("overlays.menuOptions")
+overlay.debug = require("overlays.debug")
 
 function love.load()
   load_cards("assets")
