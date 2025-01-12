@@ -101,7 +101,6 @@ function M.mousereleased(x, y, button)
     GameState = reducer(GameState, actions.NEW_GAME())
   end
   if button == 1 and HANDLING_CARD then
-    print("released " .. TRACK_INDEX)
     GameState = reducer(
       GameState,
       actions.RELEASE_CARD({

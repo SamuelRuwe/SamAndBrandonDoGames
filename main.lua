@@ -1,7 +1,7 @@
 local game_state = require("state.core")
-local dump = require("utils.debug").dump
 local reducer = require("state.reducer")
 local actions = game_state.actions
+Logger = require("utils.logger")
 
 local function load_img(file_name)
   return love.graphics.newImage("assets/" .. file_name)
