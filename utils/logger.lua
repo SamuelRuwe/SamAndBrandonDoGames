@@ -11,7 +11,6 @@ end
 
 function logger.log(content)
   table.insert(logs, content)
-  print(content)
 end
 
 return logger
