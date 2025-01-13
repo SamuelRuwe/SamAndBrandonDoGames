@@ -3,19 +3,14 @@ local M = {}
 local action_types = require("state.highcard.action").action_types
 local phases = require("state.highcard.phases")
 local selectors = require("state.highcard.selector")
-
-function M.can(next_state)
-  return false
-end
+local fp = require("utils.fp")
 
 function M.handle_action(state, action)
   if action.type == action_types.DRAW_CARD then
     local drawn = table.remove(state.deck)
-    local player_hand = table.insert(selectors.selectPlayerHand(state), drawn)
-    Logger.log("deck size " .. #state.deck)
     return {
       player = {
-        hand = player_hand,
+        hand = fp.append(selectors.selectPlayerHand(state), drawn),
       },
       cpu = state.cpu,
       deck = state.deck,

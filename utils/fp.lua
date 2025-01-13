@@ -75,4 +75,17 @@ function M.tail(list, n)
   return result
 end
 
+---@param t table: the first input list
+---@param e any: the element to append to the list
+---@return table: the concatenation of input t and e
+function M.append(t, e)
+  local result = {}
+  for _, element in ipairs(t) do
+    table.insert(result, element)
+  end
+  table.insert(result, e)
+
+  return result
+end
+
 return M
