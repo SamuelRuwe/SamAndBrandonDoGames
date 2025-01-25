@@ -5,6 +5,7 @@ local meta_reducer = require("state.metareducer")
 
 local reducer = meta_reducer.reduce(og_reducer.reduce)
 local actions = game_state.actions
+local buttonBoi = require("gameAssets.button")
 
 local windowWidth, windowHeight = love.graphics.getDimensions()
 
@@ -93,13 +94,6 @@ function M.update(dt)
 end
 
 function M.mousereleased(x, y, button)
-  if button == 3 then
-    GameState = reducer(GameState, actions.DRAW_CARD())
-    get_card_locations()
-  end
-  if button == 2 then
-    GameState = reducer(GameState, actions.NEW_GAME())
-  end
   if button == 1 and HANDLING_CARD then
     GameState = reducer(
       GameState,
@@ -126,10 +120,19 @@ local function draw_dragging_card(imageName)
   love.graphics.draw(CardImages[imageName], draggablex + offsetx, draggabley + offsety)
 end
 
+local function draw_debug_axis()
+  local x = windowWidth / 2 - 2
+  local y = 0
+  local width = 4
+  local height = windowHeight
+  buttonBoi.create(x, y, width, height)
+  buttonBoi.create(0, windowHeight / 2 - 2, windowWidth, 4)
+end
+
 function M.draw(t)
   -- center lines
-  love.graphics.rectangle("fill", windowWidth / 2 - 2, 0, 4, windowHeight)
-  love.graphics.rectangle("fill", 0, windowHeight / 2 - 2, windowWidth, 4)
+  draw_debug_axis()
+  buttonBoi.create(windowWidth / 2 - 2, 0, 200, 200, { text = "bing bop boom boom boom bop bam" })
 
   -- player card area
   love.graphics.rectangle(
@@ -156,6 +159,13 @@ function M.keypressed(k)
   end
   if k == "escape" then
     state.current = state.menu
+  end
+  if k == "d" then
+    GameState = reducer(GameState, actions.DRAW_CARD())
+    get_card_locations()
+  end
+  if k == "n" then
+    GameState = reducer(GameState, actions.NEW_GAME())
   end
 end
 
