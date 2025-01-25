@@ -30,7 +30,14 @@ function Button.create(x, y, width, height, opts)
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.print(opts.text, font, x, y)
     love.graphics.setColor(1, 1, 1, 1)
+    love.keypressed()
   end
+end
+
+function Button.contains(x, y, width, height, mouseX, mouseY)
+  local inX = (x <= mouseX) and mouseX <= x + width
+  local inY = (y <= mouseY) and mouseY <= y + height
+  return inX and inY
 end
 
 return Button

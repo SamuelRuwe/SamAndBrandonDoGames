@@ -23,6 +23,8 @@ HANDLE_INDEX = nil
 TRACK_INDEX = nil
 WIDTH_OFFSET = 0.15
 
+local buttons = {}
+
 local function get_card_locations()
   if PlayerCardLocations then
     PlayerCardLocations = {}
@@ -94,6 +96,13 @@ function M.update(dt)
 end
 
 function M.mousereleased(x, y, button)
+  for i, v in pairs(buttons) do
+    Logger.log("mouse x " .. x .. " mouse y " .. y)
+    Logger.log(
+      "button x " .. v.x .. " button y " .. v.y .. " button width " .. v.width .. " button height " .. v.height
+    )
+    Logger.log("button was clicked? " .. tostring(buttonBoi.contains(v.x, v.y, v.width, v.height, x, y)))
+  end
   if button == 1 and HANDLING_CARD then
     GameState = reducer(
       GameState,
@@ -132,7 +141,12 @@ end
 function M.draw(t)
   -- center lines
   draw_debug_axis()
-  buttonBoi.create(windowWidth / 2 - 2, 0, 200, 200, { text = "bing bop boom boom boom bop bam" })
+  local x = windowWidth / 2 - 2
+  local y = 0
+  local width = 200
+  local height = 200
+  buttonBoi.create(x, y, width, height, { text = "bing bop boom boom boom bop bam" })
+  table.insert(buttons, { x = x, y = y, width = width, height = height })
 
   -- player card area
   love.graphics.rectangle(
